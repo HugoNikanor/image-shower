@@ -7,6 +7,8 @@
                  [ring/ring-defaults "0.3.1"] ; contains ring/core
                  [ring/ring-jetty-adapter "1.7.0-RC1"]
                  [compojure "1.6.1"]    ; defroutes
+                 [hiccup "1.0.5"]       ; HTML
+                 [garden "1.3.5"]       ; CSS
                  ]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler image-shower.core/handler})
