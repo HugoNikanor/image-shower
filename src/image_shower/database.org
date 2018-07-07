@@ -1,0 +1,25 @@
+** Entries
+   
+| id | url       | title     | Text                  | image    | image-alt | timestamp |
+|----+-----------+-----------+-----------------------+----------+-----------+-----------|
+|  0 | this-post | This Post | This is a description | post.png | Post Pic  | 150000000 |
+|    |           |           |                       |          |           |           |
+unique(url) -- not scrictly necesarry
+
+** Tags
+   
+| id | text       |
+|----+------------|
+|  2 | NSFW       |
+|  4 | wallpapper |
+unique (text)
+
+** Tag Mapping
+
+| id | post_id | tag_id |
+|----+---------+--------|
+| 0  | 0       | 2      |
+unique (post_id, tag_id)
+
+mapping 0 means that =this-post= is =NSFW=.
+
