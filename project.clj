@@ -9,6 +9,9 @@
                  [compojure "1.6.1"]    ; defroutes
                  [hiccup "1.0.5"]       ; HTML
                  [garden "1.3.5"]       ; CSS
+                 [korma "0.4.3"]        ; SQL
+                 ;; [org.clojure/java.jdbc "0.7.7"]
+                 [org.postgresql/postgresql "9.4.1207"]
                  ]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler image-shower.core/handler})
