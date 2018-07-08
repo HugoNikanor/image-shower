@@ -2,7 +2,7 @@
   (:require [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             (compojure [core :refer :all]
                        [coercions :refer [as-int]]
-                       route)
+                       [route :as route])
             (hiccup [page :refer [html5]]
                     [def :refer :all]
                     [element :refer :all])
