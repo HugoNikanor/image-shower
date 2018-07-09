@@ -39,3 +39,8 @@ CREATE TABLE tag_map (
 	tag_id   INT NOT NULL REFERENCES tags(id),
     UNIQUE (entry_id, tag_id)
 );
+
+CREATE TABLE test (
+	id SERIAL PRIMARY KEY NOT NULL,
+	entry_id INT NOT NULL REFERENCES entries(id),
+);
