@@ -39,10 +39,13 @@
   (use 'image-shower.db)
   (ns image-shower.db)
 
-  ;; I can't get 'fields' to work for 'with' fields
   (select entries
           (with media)
           (with tags))
+
+  I can't get fields to work for joined tables.
+  Documentation says to use :tags.id, but that does
+  nothing
   )
 
 ;; (def base
@@ -62,4 +65,30 @@
 ;;           (with tags))
 ;;   )
 
-;; cfnm
+;; cfnm, 1262
+
+(comment
+  (time (select entries
+                (with tags)
+                (with media)))
+  "Elapsed time: 76.041317 msecs"
+  )
+
+(def entries
+  (select entries
+          (with tags)
+          (with media)))
+
+(defn memv [collection item]
+  (.contains collection item))
+
+
+(defn entries-tagged [entries tag]
+  (filter #(memv (map :text (:tags %))
+                 tag)
+          entries))
+
+(comment
+  (time (entries-tagged entries "cfnm"))
+  "Elapsed time: 0.051676 msecs"
+  )
