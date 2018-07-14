@@ -33,9 +33,10 @@
                 [:source {:src (url "/media/" (:url vid))}]])
      
      )
-   [:main.card-body
-    (comment [:h4.card-title (:title entry)])
-    (:text entry)]
+   (when-not (empty? (:text entry))
+     [:main.card-body
+      (comment [:h4.card-title (:title entry)])
+      (:text entry)])
    [:footer.card-footer
     (map tag (map :text (:tags entry)))]])
 
