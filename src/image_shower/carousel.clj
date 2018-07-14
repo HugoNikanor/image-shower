@@ -7,7 +7,9 @@
 (defelem carousel [head & tail]
   "Bootstrap carousel. Takes a list of hiccup components,
 which becomes the slides of the carousel.
-Has next and prev arrows, along with current slide info."
+Has next and prev arrows, along with current slide info.
+TODO look into using entries.id instead of gensym since that
+     would work better with the cache."
   (let [id (gensym "carousel")]
     [:div.carousel.slide {:id id :data-interval "false"}
      [:ol.carousel-indicators
