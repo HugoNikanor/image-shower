@@ -16,15 +16,53 @@
            (url "/post/" id)
            id))
 
+(defelem carousel-item [url & [active]]
+  [:div.carousel-item {:class (when active "active")}
+   (image {:class "d-block w-100"}
+          url)])
+
+(defelem carousel-link [dir text]
+  [:a {:class (str "carousel-control-" dir)
+       :role "button"
+       :data-slide dir}
+   [:span {:class (str "carousel-control-" dir "-icon")
+           :aria-hidden "true"}]
+   [:span.sr-only text]])
+
+(defelem carousel-indicator [id idx]
+  [:li {:data-target (url "#" id)
+        :data-slide-to idx
+        :class (when (zero? idx) "active")}])
+
+(defelem carousel [head & tail]
+  (let [id (gensym "carousel")]
+    [:div.carousel.slide {:id id :data-interval "false"}
+     [:ol.carousel-indicators
+      (cons (carousel-indicator {:class "active"} id 0)
+            (map-indexed (fn [idx _] (carousel-indicator id (+ 1 idx)))
+                         tail))]
+     [:div.carousel-inner (cons head tail)]
+     (carousel-link {:href (url "#" id)} "prev" "Previous")
+     (carousel-link {:href (url "#" id)} "next" "Next")]))
+
+(defelem card-image-top [entry]
+  (let [imgs (:media entry)]
+    (if (= 1 (count imgs))
+      (image {:class "card-img-top"}
+             (url "/media/" (:url (first imgs))))
+      (apply carousel {:class "card-img-top"}
+       (map-indexed (fn [idx image]
+                      (carousel-item (url "/media/" (:url image))
+                                     (zero? idx)))
+         imgs)))))
+
 (defelem post [entry]
   "Formats a single post into an HTML document"
   [:article.post.card
    [:header.card-header (header-link (:id entry))]
    ;; TODO show multiple images
    (case (:post_type entry)
-     "photo" (let [img (first (:media entry))]
-               (image {:class "card-img-top"}
-                      (url "/media/" (:url img))))
+     "photo" (card-image-top {} entry)
      "text" nil
      "video" (let [vid (first (:media entry))]
                [:video.card-img-top
