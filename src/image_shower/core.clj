@@ -4,7 +4,7 @@
             (compojure [core :refer :all]
                        [coercions :refer [as-int]]
                        [route :as route])
-            (hiccup [page :refer [html5 include-css]]
+            (hiccup [page :refer [html5 include-css include-js]]
                     [def :refer :all]
                     [util :refer :all :exclude [url-encode]]
                     [element :refer :all])
@@ -41,39 +41,45 @@
 (defn safe-as-int [n]
   (or (as-int n) 1))
 
+(defhtml full-page [& elems]
+  (html5
+      (head)
+      [:body elems
+       (include-js "https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                   "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                   "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js")]))
+
+
 (defroutes app
   (route/files "/media" {:root "public/media"})
   (GET "/" [p :<< safe-as-int :as {uri :uri}]
-    (html5 (head)
-        [:body
-         (html/posts {:class "main"}
-                     {:uri uri
-                      :page p}
-                     (-> q-base
-                         (page (- p 1))
-                         (select)))]))
+    (full-page
+     (html/posts {:class "main"}
+                 {:uri uri
+                  :page p}
+                 (-> q-base
+                     (page (- p 1))
+                     (select)))))
 
   (GET "/tag/:tag" [tag p :<< safe-as-int :as {uri :uri}]
-    (html5 (head)
-        [:body
-         (html/posts {:class "main"}
-                     {:uri uri
-                      :page p}
-                     (-> q-base
-                         (tagged (form-decode-str tag))
-                         (page (- p 1))
-                         (select)))]))
+    (full-page
+     (html/posts {:class "main"}
+                 {:uri uri
+                  :page p}
+                 (-> q-base
+                     (tagged (form-decode-str tag))
+                     (page (- p 1))
+                     (select)))))
 
   (GET "/post/:id" [id :<< as-int]
     ;; Requesting nonexistant id leads to empty page
-    (html5 (head)
-        [:body
-         (html/posts
-          false
-          (-> q-base
-              (where {:id id})
-              (limit 1)
-              (select)))]))
+    (full-page
+     (html/posts
+      false
+      (-> q-base
+          (where {:id id})
+          (limit 1)
+          (select)))))
   (route/not-found "404 Page"))
 
 (def handler
