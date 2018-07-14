@@ -33,48 +33,13 @@
   (belongs-to entries {:lfk :entry_id
                        :rfk :entry_id}))
 
-;; (defentity tag_map)
+;; I can't get fields to work for joined tables.
+;; Documentation says to use :tags.id, but that does
+;; nothing
 
-(comment
-  (use 'image-shower.db)
-  (ns image-shower.db)
 
-  (select entries
-          (with media)
-          (with tags))
 
-  I can't get fields to work for joined tables.
-  Documentation says to use :tags.id, but that does
-  nothing
-  )
-
-;; (def base
-;;   (-> (select* entries)
-;;       (with tags)
-;;       (with media)
-;;       (comment (order :timestamp :DESC))
-;;       ))
-
-;; (defn get-posts []
-;;   (select base))
-
-;; (defn get-posts-by-tag [tag]
-;;   (-> base
-;;       )
-;;   (select entries
-;;           (with tags))
-;;   )
-
-;; cfnm, 1262
-
-(comment
-  (time (select entries
-                (with tags)
-                (with media)))
-  "Elapsed time: 76.041317 msecs"
-  )
-
-(def entries
+(defn get-entries []
   (select entries
           (with tags)
           (with media)))
@@ -82,13 +47,23 @@
 (defn memv [collection item]
   (.contains collection item))
 
-
 (defn entries-tagged [entries tag]
   (filter #(memv (map :text (:tags %))
                  tag)
           entries))
 
+(defn entry-by-id [entries id]
+  )
+
 (comment
+  (time (select entries
+                (with tags)
+                (with media)))
+  "Elapsed time: 76.041317 msecs"
+
   (time (entries-tagged entries "cfnm"))
   "Elapsed time: 0.051676 msecs"
+
+  (time (filter #(= 1262 (:id %))
+                (get-entries)))
   )
