@@ -40,14 +40,6 @@
    [:footer.card-footer
     (map tag (map :text (:tags entry)))]])
 
-(defelem posts [data lst]
-  (let [pnav (when data (page-nav {} data))]
-    [:div.card-columns
-     pnav
-     (map #(post {} %)
-          lst)
-     pnav]))
-
 (defelem page-nav [data]
   (let [{cur :page
          base :uri} data]
@@ -61,3 +53,10 @@
         [:a.btn.btn-outline-secondary {:href (url base "?p=" (- cur 1))} "<"]
         [:a.btn.btn-outline-secondary {:href (url base "?p=" (+ cur 1))} ">"]]]]]))
 
+(defelem posts [data lst]
+  (let [pnav (when data (page-nav {} data))]
+    [:div.card-columns
+     pnav
+     (map #(post {} %)
+          lst)
+     pnav]))
