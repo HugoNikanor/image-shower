@@ -47,18 +47,20 @@
           (map #(html/post {} %)
                (-> q-base
                    (limit 100)
-                   (offset 100)
-                   (select))
-               )
-          ]]))
-  (GET "/post/:id" [id :<< as-int
-                    ]
-       ;; It's currently an error to request a post which doesn't exists
+                   (offset 0)
+                   (select)))]]))
+
+  (GET "/post/:id" [id :<< as-int]
+       ;; Requesting nonexistant id leads to empty page
        (html5
         (head)
         [:body
-         (html/post {} (first (filter #(= id (:id %))
-                                      (get-entries))))]))
+         (map #(html/post {} %)
+              (-> q-base
+                  (where {:id id})
+                  (limit 1)
+                  (select)))]))
+
   (GET "/tag/:tag" [tag]
        ;; This is slow (n^2)
        (html5
