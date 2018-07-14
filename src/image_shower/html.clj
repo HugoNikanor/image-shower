@@ -11,10 +11,15 @@
            (url "/tag/" (url-encode t))
            t))
 
+(defelem header-link [id]
+  (link-to {:class "card-link"}
+           (url "/post/" id)
+           id))
+
 (defelem post [entry]
   "Formats a single post into an HTML document"
   [:article.post.card
-   [:header.card-header (:id entry)]
+   [:header.card-header (header-link (:id entry))]
    ;; TODO show multiple images
    (case (:post_type entry)
      "photo" (let [img (first (:media entry))]
