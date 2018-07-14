@@ -28,7 +28,8 @@
      "text" nil
      "video" (let [vid (first (:media entry))]
                [:video.card-img-top
-                {:controls true}
+                {:controls true
+                 :preload "metadata"}
                 [:source {:src (url "/media/" (:url vid))}]])
      
      )
