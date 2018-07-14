@@ -17,10 +17,12 @@
                       :lfk :entry_id})
   (many-to-many tags :tag_map
                 {:lfk :entry_id
-                 :rfk :tag_id}))
+                 :rfk :tag_id})
+  (belongs-to tag_map {:rfk :entry_id
+                      :lfK :id}))
 
 (defentity tags
-  (entity-fields :text)
+  ;; (entity-fields :text)
   (many-to-many entries :tap_map
                 {:lfk :tag_id
                  :rfk :entry_id}))
@@ -29,6 +31,11 @@
   (entity-fields :url :alt)
   (belongs-to entries {:fk :entry_id}))
 
+(defentity tag_map
+  ;; (entity-fields :entry_id :tag_id)
+  (has-one entries {:fk :entry_id})
+  (has-one tags {:fk :tag_id}))
+
 (defentity testtable
   (belongs-to entries {:lfk :entry_id
                        :rfk :entry_id}))
@@ -36,13 +43,6 @@
 ;; I can't get fields to work for joined tables.
 ;; Documentation says to use :tags.id, but that does
 ;; nothing
-
-
-
-(defn get-entries []
-  (select entries
-          (with tags)
-          (with media)))
 
 (def q-base
   (-> (select* entries)
@@ -53,11 +53,6 @@
 
 (defn memv [collection item]
   (.contains collection item))
-
-(defn entries-tagged [entries tag]
-  (filter #(memv (map :text (:tags %))
-                 tag)
-          entries))
 
 (comment
   (time (select entries
@@ -71,3 +66,22 @@
   (time (filter #(= 1262 (:id %))
                 (get-entries)))
   )
+
+
+(defn tagged [tag]
+  "Returns a base from which all posts tagged with tag (string) can be
+selected. This whole thing can be expressed as 
+    SELECT * FROM tag_map
+    LEFT JOIN entries ON entries.id = entry.id
+    WHERE tag_id = (SELECT id FROM tags WHERE text = 'cfnm')
+Which I'm not sure is better.
+"
+  (-> q-base
+      (where {:id [in (subselect
+                       tag_map
+                       (fields :entry_id)
+                       (where {:tag_id [in (subselect
+                                            tags
+                                            (fields :id)
+                                            (where {:text tag}))]}))]})))
+

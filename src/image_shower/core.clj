@@ -62,16 +62,15 @@
                   (select)))]))
 
   (GET "/tag/:tag" [tag]
-       ;; This is slow (n^2)
        (html5
         (head)
         [:body
          [:div.card-columns.main
           (map #(html/post {} %)
-               (filter #(memv (map :text (:tags %))
-                              (form-decode-str tag))
-                       (-> q-base
-                           (select))))]]))
+               (-> (tagged (form-decode-str tag))
+                   ;; (limit 10)
+                   ;; (offset 500)
+                   (select)))]]))
   (route/not-found "404 Page"))
 
 (def handler
