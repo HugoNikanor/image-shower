@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [ring/ring-defaults "0.3.1"] ; contains ring/core
                  [ring/ring-jetty-adapter "1.7.0-RC1"]
+                 [ring/ring-codec "1.1.1"]
                  [compojure "1.6.1"]    ; defroutes
                  [hiccup "1.0.5"]       ; HTML
                  [garden "1.3.5"]       ; CSS

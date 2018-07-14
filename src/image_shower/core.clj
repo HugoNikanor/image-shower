@@ -1,11 +1,12 @@
 (ns image-shower.core
   (:require [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [ring.util.codec :refer [form-decode-str]]
             (compojure [core :refer :all]
                        [coercions :refer [as-int]]
                        [route :as route])
             (hiccup [page :refer [html5 include-css]]
                     [def :refer :all]
-                    [util :refer :all]
+                    [util :refer :all :exclude [url-encode]]
                     [element :refer :all])
             (garden [core :refer [css]]
                     [units :refer :all :exclude [rem]])
@@ -59,15 +60,15 @@
          (html/post {} (first (filter #(= id (:id %))
                                       (get-entries))))]))
   (GET "/tag/:tag" [tag]
+       ;; This is slow (n^2)
        (html5
         (head)
         [:body
          [:div.card-columns.main
           (map #(html/post {} %)
                (filter #(memv (map :text (:tags %))
-                              tag)
+                              (form-decode-str tag))
                        (-> q-base
-                           (limit 100)
                            (select))))]]))
   (route/not-found "404 Page"))
 
