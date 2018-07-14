@@ -13,8 +13,6 @@
 (defentity entries
   ;; (entity-fields :title :slug :timestamp :post_type :text)
   (has-many media {:fk :entry_id})
-  (has-one testtable {:rfk :entry_id
-                      :lfk :entry_id})
   (many-to-many tags :tag_map
                 {:lfk :entry_id
                  :rfk :tag_id})
