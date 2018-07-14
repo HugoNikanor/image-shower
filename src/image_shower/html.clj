@@ -1,10 +1,7 @@
 (ns image-shower.html
-  (:require (hiccup [page :refer [html5]]
-                    [def :refer :all]
+  (:require (hiccup [def :refer [defelem]]
                     [util :refer [url url-encode]]
                     [element :refer :all])
-            (garden [core :refer [css]]
-                    [units :refer :all :exclude [rem]])
             (image-shower [carousel :as carousel :refer [carousel]])))
 
 (defelem tag [t]

@@ -12,7 +12,6 @@
                     [units :refer :all :exclude [rem]])
             (image-shower [html :as html]
                           [db :refer :all])
-
             [korma.core :refer :all]
             ))
 
