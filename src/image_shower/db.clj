@@ -8,7 +8,7 @@
 
 (defdb db db-spec)
 
-(declare entries tags media tag_map testtable)
+(declare entries tags media tag_map)
 
 (defentity entries
   ;; (entity-fields :title :slug :timestamp :post_type :text)
@@ -35,10 +35,6 @@
   ;; (entity-fields :entry_id :tag_id)
   (has-one entries {:fk :entry_id})
   (has-one tags {:fk :tag_id}))
-
-(defentity testtable
-  (belongs-to entries {:lfk :entry_id
-                       :rfk :entry_id}))
 
 ;; I can't get fields to work for joined tables.
 ;; Documentation says to use :tags.id, but that does
