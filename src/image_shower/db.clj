@@ -62,15 +62,15 @@
   )
 
 
-(defn tagged [tag]
-  "Returns a base from which all posts tagged with tag (string) can be
-selected. This whole thing can be expressed as 
+(defn tagged [base tag]
+  "Limit base query to only posts tagged with tag. Equivalent to the
+query: 
     SELECT * FROM tag_map
     LEFT JOIN entries ON entries.id = entry.id
     WHERE tag_id = (SELECT id FROM tags WHERE text = 'cfnm')
-Which I'm not sure is better.
+which I'm not sure is better.
 "
-  (-> q-base
+  (-> base
       (where {:id [in (subselect
                        tag_map
                        (fields :entry_id)

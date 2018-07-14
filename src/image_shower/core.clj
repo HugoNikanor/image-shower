@@ -59,7 +59,8 @@
          (html/posts {:class "main"}
                      {:uri uri
                       :page p}
-                     (-> (tagged (form-decode-str tag))
+                     (-> q-base
+                         (tagged (form-decode-str tag))
                          (page (- p 1))
                          (select)))]))
 
