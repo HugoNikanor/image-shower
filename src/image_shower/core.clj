@@ -40,33 +40,30 @@
 (defroutes app
   (route/files "/media" {:root "public/media"})
   (GET "/" []
-       (html5
-        (head)
+    (html5 (head)
         [:body
          (html/posts {:class "main"}
-          (-> q-base
-              (page 0)
-              (select)))]))
+                     (-> q-base
+                         (page 0)
+                         (select)))]))
 
   (GET "/post/:id" [id :<< as-int]
-       ;; Requesting nonexistant id leads to empty page
-       (html5
-        (head)
+    ;; Requesting nonexistant id leads to empty page
+    (html5 (head)
         [:body
          (html/posts
-              (-> q-base
-                  (where {:id id})
-                  (limit 1)
-                  (select)))]))
+          (-> q-base
+              (where {:id id})
+              (limit 1)
+              (select)))]))
 
   (GET "/tag/:tag" [tag]
-       (html5
-        (head)
+    (html5 (head)
         [:body
          (html/posts {:class "main"}
-          (-> (tagged (form-decode-str tag))
-              (page 0)
-              (select)))]))
+                     (-> (tagged (form-decode-str tag))
+                         (page 0)
+                         (select)))]))
   (route/not-found "404 Page"))
 
 (def handler
