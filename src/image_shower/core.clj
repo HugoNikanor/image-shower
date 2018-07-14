@@ -47,6 +47,14 @@
                          (page 0)
                          (select)))]))
 
+  (GET "/tag/:tag" [tag]
+    (html5 (head)
+        [:body
+         (html/posts {:class "main"}
+                     (-> (tagged (form-decode-str tag))
+                         (page 0)
+                         (select)))]))
+
   (GET "/post/:id" [id :<< as-int]
     ;; Requesting nonexistant id leads to empty page
     (html5 (head)
@@ -56,14 +64,6 @@
               (where {:id id})
               (limit 1)
               (select)))]))
-
-  (GET "/tag/:tag" [tag]
-    (html5 (head)
-        [:body
-         (html/posts {:class "main"}
-                     (-> (tagged (form-decode-str tag))
-                         (page 0)
-                         (select)))]))
   (route/not-found "404 Page"))
 
 (def handler
