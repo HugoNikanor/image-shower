@@ -37,3 +37,8 @@
     (:text entry)]
    [:footer.card-footer
     (map tag (map :text (:tags entry)))]])
+
+(defelem posts [lst]
+  [:div.card-columns
+   (map #(post {} %)
+        lst)])

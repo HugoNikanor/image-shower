@@ -43,19 +43,18 @@
        (html5
         (head)
         [:body
-         [:div.card-columns.main
-          (map #(html/post {} %)
-               (-> q-base
-                   (limit 100)
-                   (offset 0)
-                   (select)))]]))
+         (html/posts {:class "main"}
+          (-> q-base
+              (limit 100)
+              (offset 0)
+              (select)))]))
 
   (GET "/post/:id" [id :<< as-int]
        ;; Requesting nonexistant id leads to empty page
        (html5
         (head)
         [:body
-         (map #(html/post {} %)
+         (html/posts
               (-> q-base
                   (where {:id id})
                   (limit 1)
@@ -65,12 +64,11 @@
        (html5
         (head)
         [:body
-         [:div.card-columns.main
-          (map #(html/post {} %)
-               (-> (tagged (form-decode-str tag))
-                   ;; (limit 10)
-                   ;; (offset 500)
-                   (select)))]]))
+         (html/posts {:class "main"}
+          (-> (tagged (form-decode-str tag))
+              ;; (limit 10)
+              ;; (offset 500)
+              (select)))]))
   (route/not-found "404 Page"))
 
 (def handler
