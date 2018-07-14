@@ -18,13 +18,13 @@ Has next and prev arrows, along with current slide info."
      (carousel-link {:href (str "#" id)} "prev" "Previous")
      (carousel-link {:href (str "#" id)} "next" "Next")]))
 
-(defelem carousel-item [url & [active]]
+(defelem item [url & [active]]
   "One slide in a carousel, always an item because I only want items in carousels."
   [:div.carousel-item {:class (when active "active")}
    (image {:class "d-block w-100"}
           url)])
 
-(defelem carousel-link [dir text]
+(defelem link [dir text]
   "Carousel prev/next button link"
   [:a {:class (str "carousel-control-" dir)
        :role "button"
@@ -33,7 +33,7 @@ Has next and prev arrows, along with current slide info."
            :aria-hidden "true"}]
    [:span.sr-only text]])
 
-(defelem carousel-indicator [id idx]
+(defelem indicator [id idx]
   "Carousel current slide indicator component."
   [:li {:data-target (str "#" id)
         :data-slide-to idx

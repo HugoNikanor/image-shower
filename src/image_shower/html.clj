@@ -5,7 +5,7 @@
                     [element :refer :all])
             (garden [core :refer [css]]
                     [units :refer :all :exclude [rem]])
-            (image-shower [carousel :refer [carousel carousel-item]])))
+            (image-shower [carousel :as carousel :refer [carousel]])))
 
 (defelem tag [t]
   (link-to {:class "card-link text-muted tag"}
@@ -24,7 +24,7 @@
              (url "/media/" (:url (first imgs))))
       (apply carousel {:class "card-img-top"}
        (map-indexed (fn [idx image]
-                      (carousel-item (url "/media/" (:url image))
+                      (carousel/item (url "/media/" (:url image))
                                      (zero? idx)))
          imgs)))))
 
