@@ -16,5 +16,7 @@
                  [honeysql "0.9.3"]
                  ]
   :plugins [[lein-ring "0.12.4"]]
-  :ring {:handler image-shower.core/handler})
+  :ring {:handler image-shower.core/handler
+         :nrepl {:start? true}
+         })
 
