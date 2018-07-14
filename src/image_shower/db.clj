@@ -44,6 +44,13 @@
           (with tags)
           (with media)))
 
+(def q-base
+  (-> (select* entries)
+      (with tags)
+      (with media)
+      )
+  )
+
 (defn memv [collection item]
   (.contains collection item))
 
@@ -51,9 +58,6 @@
   (filter #(memv (map :text (:tags %))
                  tag)
           entries))
-
-(defn entry-by-id [entries id]
-  )
 
 (comment
   (time (select entries
