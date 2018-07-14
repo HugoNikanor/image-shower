@@ -1,13 +1,14 @@
 (ns image-shower.html
   (:require (hiccup [page :refer [html5]]
                     [def :refer :all]
+                    [util :refer [url-encode]]
                     [element :refer :all])
             (garden [core :refer [css]]
                     [units :refer :all :exclude [rem]])))
 
 (defelem tag [t]
-  (link-to {:class "card-link"}
-           (str "/tag/" t)
+  (link-to {:class "card-link tag"}
+           (str "/tag/" (url-encode t))
            t))
 
 (defelem post [entry]
@@ -15,12 +16,12 @@
   [:article.post.card
    [:h4.card-title (:title entry)]
    ;; TODO show multiple images
-   (case (:type post)
-     "photo" (let [img (head (media entry))]
+   (case (:post_type entry)
+     "photo" (let [img (first (:media entry))]
                (image {:class "card-img-top"}
                       (:url img)))
-     "text" []
-     "video" (let [vid (head (media entry))]
+     "text" nil
+     "video" (let [vid (first (:media entry))]
                [:video.card-img-top
                 {:controls true}
                 [:source {:src vid}]])
