@@ -20,7 +20,8 @@
   (css
    [:.main {:padding (cm 1)}
     [:.tag {:font-size (em 0.8)
-            :color "gray"}]
+            ;; (comment :color "gray")
+            }]
     (comment [:.post {:width "25rem"}])]))
 
 (defelem not-implemented [feature]
@@ -37,22 +38,29 @@
    (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css")
    [:style page-css]])
 
+(defn safe-as-int [n]
+  (or (as-int n) 1))
+
 (defroutes app
   (route/files "/media" {:root "public/media"})
-  (GET "/" []
+  (GET "/" [p :<< safe-as-int :as {uri :uri}]
     (html5 (head)
         [:body
          (html/posts {:class "main"}
+                     {:uri uri
+                      :page p}
                      (-> q-base
-                         (page 0)
+                         (page (- p 1))
                          (select)))]))
 
-  (GET "/tag/:tag" [tag]
+  (GET "/tag/:tag" [tag p :<< safe-as-int :as {uri :uri}]
     (html5 (head)
         [:body
          (html/posts {:class "main"}
+                     {:uri uri
+                      :page p}
                      (-> (tagged (form-decode-str tag))
-                         (page 0)
+                         (page (- p 1))
                          (select)))]))
 
   (GET "/post/:id" [id :<< as-int]
@@ -60,6 +68,7 @@
     (html5 (head)
         [:body
          (html/posts
+          false
           (-> q-base
               (where {:id id})
               (limit 1)

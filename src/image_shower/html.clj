@@ -7,7 +7,7 @@
                     [units :refer :all :exclude [rem]])))
 
 (defelem tag [t]
-  (link-to {:class "card-link tag"}
+  (link-to {:class "card-link text-muted tag"}
            (url "/tag/" (url-encode t))
            t))
 
@@ -39,7 +39,24 @@
    [:footer.card-footer
     (map tag (map :text (:tags entry)))]])
 
-(defelem posts [lst]
-  [:div.card-columns
-   (map #(post {} %)
-        lst)])
+(defelem posts [data lst]
+  (let [pnav (when data (page-nav {} data))]
+    [:div.card-columns
+     pnav
+     (map #(post {} %)
+          lst)
+     pnav]))
+
+(defelem page-nav [data]
+  (let [{cur :page
+         base :uri} data]
+    [:div.card.bg-info.container
+     [:header.card-header
+      "Change Page"]
+     [:main.card-body
+      [:div.row
+       [:p.col-sm (str cur)]
+       [:div.btn-group.col-sm {:role "group"}
+        [:a.btn.btn-outline-secondary {:href (url base "?p=" (- cur 1))} "<"]
+        [:a.btn.btn-outline-secondary {:href (url base "?p=" (+ cur 1))} ">"]]]]]))
+
