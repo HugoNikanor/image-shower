@@ -4,7 +4,8 @@
                     [util :refer [url url-encode]]
                     [element :refer :all])
             (garden [core :refer [css]]
-                    [units :refer :all :exclude [rem]])))
+                    [units :refer :all :exclude [rem]])
+            (image-shower [carousel :refer [carousel carousel-item]])))
 
 (defelem tag [t]
   (link-to {:class "card-link text-muted tag"}
@@ -15,35 +16,6 @@
   (link-to {:class "card-link"}
            (url "/post/" id)
            id))
-
-(defelem carousel-item [url & [active]]
-  [:div.carousel-item {:class (when active "active")}
-   (image {:class "d-block w-100"}
-          url)])
-
-(defelem carousel-link [dir text]
-  [:a {:class (str "carousel-control-" dir)
-       :role "button"
-       :data-slide dir}
-   [:span {:class (str "carousel-control-" dir "-icon")
-           :aria-hidden "true"}]
-   [:span.sr-only text]])
-
-(defelem carousel-indicator [id idx]
-  [:li {:data-target (url "#" id)
-        :data-slide-to idx
-        :class (when (zero? idx) "active")}])
-
-(defelem carousel [head & tail]
-  (let [id (gensym "carousel")]
-    [:div.carousel.slide {:id id :data-interval "false"}
-     [:ol.carousel-indicators
-      (cons (carousel-indicator {:class "active"} id 0)
-            (map-indexed (fn [idx _] (carousel-indicator id (+ 1 idx)))
-                         tail))]
-     [:div.carousel-inner (cons head tail)]
-     (carousel-link {:href (url "#" id)} "prev" "Previous")
-     (carousel-link {:href (url "#" id)} "next" "Next")]))
 
 (defelem card-image-top [entry]
   (let [imgs (:media entry)]
