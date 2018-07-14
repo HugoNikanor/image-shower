@@ -47,9 +47,7 @@
 (def q-base
   (-> (select* entries)
       (with tags)
-      (with media)
-      )
-  )
+      (with media)))
 
 (defn memv [collection item]
   (.contains collection item))
@@ -85,3 +83,8 @@ Which I'm not sure is better.
                                             (fields :id)
                                             (where {:text tag}))]}))]})))
 
+(defn page [base n]
+  (let [p-size 10]
+    (-> base
+        (limit p-size)
+        (offset (* n p-size)))))

@@ -45,8 +45,7 @@
         [:body
          (html/posts {:class "main"}
           (-> q-base
-              (limit 100)
-              (offset 0)
+              (page 0)
               (select)))]))
 
   (GET "/post/:id" [id :<< as-int]
@@ -66,8 +65,7 @@
         [:body
          (html/posts {:class "main"}
           (-> (tagged (form-decode-str tag))
-              ;; (limit 10)
-              ;; (offset 500)
+              (page 0)
               (select)))]))
   (route/not-found "404 Page"))
 
