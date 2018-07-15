@@ -92,4 +92,10 @@ which I'm not sure is better.
       (where {:page.name p})))
 
 (defn pages []
-  (select* page))
+  (-> (select* page)
+      (with entry (fields "count(1)"))))
+
+(comment (defn entry-count [page-name]
+   (first (select page
+                  (where {:name page-name})
+                  (with entry)))))

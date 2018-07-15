@@ -86,10 +86,13 @@
 
 (defelem page-item [page]
   "Single item in page list"
-  [:li.list-group-item
-   (link-to (url "/" (:name page))
+  (link-to (url "/" (:name page))
+           [:li.list-group-item
+            {:class "justify-content-between d-flex align-items-center"}
             (or (:fancy_name page)
-                (:name page)))]
+                (:name page))
+            [:span.badge.badge-primary
+             (-> page :entry first :count)]])
   )
 
 (defelem page-list [pages]
