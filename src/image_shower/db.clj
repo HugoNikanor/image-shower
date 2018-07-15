@@ -8,47 +8,50 @@
 
 (defdb db db-spec)
 
-(declare entries tags media tag_map)
+(declare entry tag media tag_map)
 
-(defentity entries
+(defentity entry
   ;; (entity-fields :title :slug :timestamp :post_type :text)
   (has-many media {:fk :entry_id})
-  (many-to-many tags :tag_map
+  (many-to-many tag :tag_map
                 {:lfk :entry_id
                  :rfk :tag_id})
   (belongs-to tag_map {:rfk :entry_id
                       :lfK :id}))
 
-(defentity tags
+(defentity tag
   ;; (entity-fields :text)
-  (many-to-many entries :tap_map
+  (many-to-many entry :tap_map
                 {:lfk :tag_id
                  :rfk :entry_id}))
 
 (defentity media
   (entity-fields :url :alt)
-  (belongs-to entries {:fk :entry_id}))
+  (belongs-to entry ; {:fk :entry_id}
+              ))
 
 (defentity tag_map
   ;; (entity-fields :entry_id :tag_id)
-  (has-one entries {:fk :entry_id})
-  (has-one tags {:fk :tag_id}))
+  (has-one entry ;{:fk :entry_id}
+           )
+  (has-one tag ; {:fk :tag_id}
+           ))
 
 ;; I can't get fields to work for joined tables.
 ;; Documentation says to use :tags.id, but that does
 ;; nothing
 
 (def q-base
-  (-> (select* entries)
-      (with tags)
+  (-> (select* entry)
+      (with tag)
       (with media)))
 
 (defn memv [collection item]
   (.contains collection item))
 
 (comment
-  (time (select entries
-                (with tags)
+  (time (select entry
+                (with tag)
                 (with media)))
   "Elapsed time: 76.041317 msecs"
 
@@ -73,7 +76,7 @@ which I'm not sure is better.
                        tag_map
                        (fields :entry_id)
                        (where {:tag_id [in (subselect
-                                            tags
+                                            tag
                                             (fields :id)
                                             (where {:text tag}))]}))]})))
 

@@ -45,7 +45,7 @@
       (comment [:h4.card-title (:title entry)])
       (:text entry)])
    [:footer.card-footer
-    (map tag (map :text (:tags entry)))]])
+    (map tag (map :text (:tag entry)))]])
 
 (defelem page-nav [data]
   (let [{cur :page
