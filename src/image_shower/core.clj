@@ -19,7 +19,7 @@
 
 (def page-css
   (css
-   [:.main {:padding (cm 1)}
+   [:.main {:padding (em 1)}
     [:.tag {:font-size (em 0.8)
             ;; (comment :color "gray")
             }]
