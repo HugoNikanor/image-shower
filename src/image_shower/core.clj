@@ -20,6 +20,10 @@
 
 (def page-css
   (css
+   [:blockquote {:border-left-width (px 2)
+                 :border-left-style "solid"
+                 :border-left-color "grey"
+                 :padding-left (em 0.5)}]
    [:.main {:padding (em 1)}
     [:.tag {:font-size (em 0.8)
             ;; (comment :color "gray")
