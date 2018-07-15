@@ -3,11 +3,29 @@
                    [core :refer :all]))
   (:refer-clojure :exclude [update]))
 
+;; I can't get fields to work for joined tables.
+;; Documentation says to use :tags.id, but that does
+;; nothing
+
+(comment
+  (time (select entry
+                (with tag)
+                (with media)))
+  "Elapsed time: 76.041317 msecs"
+
+  (time (entries-tagged entries "cfnm"))
+  "Elapsed time: 0.051676 msecs"
+
+  (time (filter #(= 1262 (:id %))
+                (get-entries))))
+
 (def db-spec (postgres
          {:db "image-shower"
           :user "hugo"}))
 
 (defdb db db-spec)
+
+;;; Database entities
 
 (declare entry tag media tag_map page)
 
@@ -35,10 +53,6 @@
 (defentity page
   (has-many entry))
 
-;; I can't get fields to work for joined tables.
-;; Documentation says to use :tags.id, but that does
-;; nothing
-
 ;;; TODO this can't be a static variable, because if the data changes
 ;;; then the cache breaks and the library refuses to work.
 (def q-base
@@ -48,19 +62,22 @@
       (with media)
       (with page)))
 
-(comment
-  (time (select entry
-                (with tag)
-                (with media)))
-  "Elapsed time: 76.041317 msecs"
+;;; Collection of query filters to be used on the form
+;;; (-> (select* entry)
+;;;     (tagged "test")
+;;;     select)
 
-  (time (entries-tagged entries "cfnm"))
-  "Elapsed time: 0.051676 msecs"
+(defn content-page [base n & {:keys [page-size] :or {page-size 10}}]
+  "Limits query to a single page, with size page-size,
+and the n'th page, starting from 1."
+  (-> base
+      (limit page-size)
+      (offset (* n page-size))))
 
-  (time (filter #(= 1262 (:id %))
-                (get-entries)))
-  )
-
+(defn page-filter [base p]
+  "Limits query to entries belonging to page."
+  (-> base
+      (where {:page.name p})))
 
 (defn tagged [base tag-name]
   "Limit base query to only posts tagged with tag. Equivalent to the
@@ -79,17 +96,10 @@ which I'm not sure is better.
                                             (fields :id)
                                             (where {:text tag-name}))]}))]})))
 
-(defn content-page [base n]
-  (let [p-size 10]
-    (-> base
-        (limit p-size)
-        (offset (* n p-size)))))
-
-(defn page-filter [base p]
-  (-> base
-      (where {:page.name p})))
+;;; Direct functions which return some form of information about the database 
 
 (defn pages []
+  "Returns a list of pages."
   (-> (select* page)
       (with entry (fields "count(1)"))))
 
