@@ -25,10 +25,7 @@
                  :border-left-color "grey"
                  :padding-left (em 0.5)}]
    [:.main {:padding (em 1)}
-    [:.tag {:font-size (em 0.8)
-            ;; (comment :color "gray")
-            }]
-    (comment [:.post {:width "25rem"}])]))
+    [:.tag {:font-size (em 0.8)}]]))
 
 (defelem not-implemented [feature]
   "Dummy page for features not yet done."
