@@ -47,18 +47,36 @@
    [:footer.card-footer
     (map tag (map :text (:tag entry)))]])
 
+(defelem nav-link [page-number & [label]]
+  (let [l (str (or label page-number))]
+    [:li.page-item (link-to {:class "page-link"}
+                            (url "?p=" page-number)
+                            l)]))
+
+(defn ceil [n]
+  (int (Math/ceil n)))
+
+(defn floor [n]
+  (int (Math/floor n)))
+
+(defn range-around [around length]
+  "Generates 'length' numbers, spaced equaly on either side of 'around'"
+  (let [q (/ length 2)]
+    (range (- around (floor q))
+           (+ around (ceil q)))))
+
 (defelem page-nav [data]
-  (let [{cur :page
-         base :uri} data]
-    [:div.card.bg-info.container
-     [:header.card-header
-      "Change Page"]
-     [:main.card-body
-      [:div.row
-       [:p.col-sm (str cur)]
-       [:div.btn-group.col-sm {:role "group"}
-        [:a.btn.btn-outline-secondary {:href (url "?p=" (- cur 1))} "<"]
-        [:a.btn.btn-outline-secondary {:href (url "?p=" (+ cur 1))} ">"]]]]]))
+  "Navigation bar for previous and next page."
+  (let [{cur :page} data
+        p-count 5]
+    [:nav {:aria-label "Page Navigation"}
+     [:ul.pagination.justify-content-center
+      [:li.page-item
+       (nav-link {:class (when (= cur 1) "disabled")} (- cur 1) "<")
+       (map (fn [i]
+              (nav-link {:class (when (= i cur) "active")} i))
+            (filter #(>= % 1) (range-around cur 5)))
+       (nav-link (+ cur 1) ">")]]]))
 
 (defelem posts [data lst]
   (let [pnav (when data (page-nav {} data))]
