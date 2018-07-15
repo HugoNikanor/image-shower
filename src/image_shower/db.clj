@@ -12,31 +12,23 @@
 
 (defentity entry
   ;; (entity-fields :title :slug :timestamp :post_type :text)
-  (has-many media {:fk :entry_id})
-  (many-to-many tag :tag_map
-                {:lfk :entry_id
-                 :rfk :tag_id})
-  (belongs-to tag_map {:rfk :entry_id
-                       :lfK :id})
+  (has-many media)
+  (many-to-many tag :tag_map)
+  (belongs-to tag_map)
   (belongs-to page))
 
 (defentity tag
   ;; (entity-fields :text)
-  (many-to-many entry :tap_map
-                {:lfk :tag_id
-                 :rfk :entry_id}))
+  (many-to-many entry :tap_map))
 
 (defentity media
   (entity-fields :url :alt)
-  (belongs-to entry ; {:fk :entry_id}
-              ))
+  (belongs-to entry))
 
 (defentity tag_map
   ;; (entity-fields :entry_id :tag_id)
-  (has-one entry ;{:fk :entry_id}
-           )
-  (has-one tag ; {:fk :tag_id}
-           ))
+  (has-one entry)
+  (has-one tag))
 
 (defentity page
   (has-many entry))
