@@ -57,8 +57,8 @@
       [:div.row
        [:p.col-sm (str cur)]
        [:div.btn-group.col-sm {:role "group"}
-        [:a.btn.btn-outline-secondary {:href (url base "?p=" (- cur 1))} "<"]
-        [:a.btn.btn-outline-secondary {:href (url base "?p=" (+ cur 1))} ">"]]]]]))
+        [:a.btn.btn-outline-secondary {:href (url "?p=" (- cur 1))} "<"]
+        [:a.btn.btn-outline-secondary {:href (url "?p=" (+ cur 1))} ">"]]]]]))
 
 (defelem posts [data lst]
   (let [pnav (when data (page-nav {} data))]
