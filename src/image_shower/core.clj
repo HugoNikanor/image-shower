@@ -11,7 +11,9 @@
             (garden [core :refer [css]]
                     [units :refer :all :exclude [rem]])
             (image-shower [html :as html]
-                          [db :refer :all])
+                          [db :refer :all
+                           :exclude [page]
+                           :rename {page-filter page}])
             [korma.core :refer :all]
             ))
 
@@ -50,33 +52,36 @@
                      "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js")])))
 
 (defroutes app
-  (context "/:page-base" [page-base :<< #(str "/" %)]
-    (route/files "/media" {:root  (str "public/" page-base)})
+  (context "/:page-name" [page-name]
+    (route/files "/media" {:root (str "public/" (str "/" page-name))})
     (GET "/" [p :<< safe-as-int :as {uri :uri}]
-      (full-page page-base
-       (html/posts {:class "main"}
-                   {:uri uri
-                    :page p}
-                   (-> q-base
-                       (page (- p 1))
-                       (select)))))
+      (full-page (str "/" page-name)
+                 (html/posts {:class "main"}
+                             {:uri uri
+                              :page p}
+                             (-> q-base
+                                 (page page-name)
+                                 (content-page (- p 1))
+                                 (select)))))
 
     (GET "/tag/:tag" [tag p :<< safe-as-int :as {uri :uri}]
-      (full-page page-base
+      (full-page (str "/" page-name)
        (html/posts {:class "main"}
                    {:uri uri
                     :page p}
                    (-> q-base
+                       (page page-name)
                        (tagged (form-decode-str tag))
-                       (page (- p 1))
+                       (content-page (- p 1))
                        (select)))))
 
     (GET "/post/:id" [id :<< as-int]
       ;; Requesting nonexistant id leads to empty page
-      (full-page page-base
+      (full-page (str "/" page-name)
        (html/posts
         false
         (-> q-base
+            (page page-name)
             (where {:id id})
             (limit 1)
             (select))))))

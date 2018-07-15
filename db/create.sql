@@ -10,7 +10,8 @@ CREATE TABLE entry (
     slug      TEXT,
 	text      TEXT,
 	timestamp TIMESTAMP NOT NULL DEFAULT now(),
-    post_type ptype NOT NULL
+    post_type ptype NOT NULL,
+    page_id   INTEGER NOT NULL REFERENCES pages(id) 
 );
 
 COMMENT ON COLUMN entry.post_id IS 'Old ID from Tumblr, will probably be removed';
@@ -39,3 +40,11 @@ CREATE TABLE tag_map (
 	tag_id   INT NOT NULL REFERENCES tag(id),
     UNIQUE (entry_id, tag_id)
 );
+
+CREATE TABLE page (
+    id SERIAL PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    fancy_name TEXT
+);
+
+COMMENT ON TABLE page IS 'List of different "blogs"'; 

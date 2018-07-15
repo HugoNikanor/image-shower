@@ -8,7 +8,7 @@
 
 (defdb db db-spec)
 
-(declare entry tag media tag_map)
+(declare entry tag media tag_map page)
 
 (defentity entry
   ;; (entity-fields :title :slug :timestamp :post_type :text)
@@ -17,7 +17,8 @@
                 {:lfk :entry_id
                  :rfk :tag_id})
   (belongs-to tag_map {:rfk :entry_id
-                      :lfK :id}))
+                       :lfK :id})
+  (belongs-to page))
 
 (defentity tag
   ;; (entity-fields :text)
@@ -37,10 +38,15 @@
   (has-one tag ; {:fk :tag_id}
            ))
 
+(defentity page
+  (has-many entry))
+
 ;; I can't get fields to work for joined tables.
 ;; Documentation says to use :tags.id, but that does
 ;; nothing
 
+;;; TODO this can't be a static variable, because if the data changes
+;;; then the cache breaks and the library refuses to work.
 (def q-base
   (-> (select* entry)
       (with tag)
@@ -80,8 +86,18 @@ which I'm not sure is better.
                                             (fields :id)
                                             (where {:text tag-name}))]}))]})))
 
-(defn page [base n]
+(defn content-page [base n]
   (let [p-size 10]
     (-> base
         (limit p-size)
         (offset (* n p-size)))))
+
+(defn page-filter [base p]
+  (-> base
+      (where {:page_id
+              [= (subselect
+                  page
+                  (fields :id)
+                  (limit 1)
+                  (where {:name p}))]})))
+
