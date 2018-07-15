@@ -55,7 +55,7 @@
 
 ;;; TODO this can't be a static variable, because if the data changes
 ;;; then the cache breaks and the library refuses to work.
-(def q-base
+(defn entry-base []
   (-> (select* entry)
       (order :timestamp :desc)
       (with tag)

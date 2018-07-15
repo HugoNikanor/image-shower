@@ -67,7 +67,7 @@
     (GET "/" [p :<< (page-fix page-name)]
       (full-page (str "/" page-name)
         (html/posts {:class "main"}
-                    (-> q-base
+                    (-> (entry-base)
                         (page page-name)
                         (content-page (- p 1))
                         (select))
@@ -78,7 +78,7 @@
     (GET "/tag/:tag" [tag p :<< (page-fix page-name)]
       (full-page (str "/" page-name)
         (html/posts {:class "main"}
-                    (-> q-base
+                    (-> (entry-base)
                         (page page-name)
                         (tagged (form-decode-str tag))
                         (content-page (- p 1))
@@ -91,7 +91,7 @@
       ;; Requesting nonexistant id leads to empty page
       (full-page (str "/" page-name)
         (html/posts
-         (-> q-base
+         (-> (entry-base)
              (page page-name)
              (where {:id id})
              (limit 1)
