@@ -30,14 +30,12 @@
 (declare entry tag media tag_map page)
 
 (defentity entry
-  ;; (entity-fields :title :slug :timestamp :post_type :text)
   (has-many media)
   (many-to-many tag :tag_map)
   (has-many tag_map)
   (belongs-to page))
 
 (defentity tag
-  ;; (entity-fields :text)
   (many-to-many entry :tap_map))
 
 (defentity media
@@ -45,10 +43,8 @@
   (belongs-to entry))
 
 (defentity tag_map
-  ;; (entity-fields :entry_id :tag_id)
   (belongs-to entry)
-  (belongs-to tag)
-  )
+  (belongs-to tag))
 
 (defentity page
   (has-many entry))
