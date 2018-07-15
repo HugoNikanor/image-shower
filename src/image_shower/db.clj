@@ -63,7 +63,7 @@
   )
 
 
-(defn tagged [base tag]
+(defn tagged [base tag-name]
   "Limit base query to only posts tagged with tag. Equivalent to the
 query: 
     SELECT * FROM tag_map
@@ -78,7 +78,7 @@ which I'm not sure is better.
                        (where {:tag_id [in (subselect
                                             tag
                                             (fields :id)
-                                            (where {:text tag}))]}))]})))
+                                            (where {:text tag-name}))]}))]})))
 
 (defn page [base n]
   (let [p-size 10]
