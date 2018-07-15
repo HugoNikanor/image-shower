@@ -2,7 +2,8 @@
   (:require (hiccup [def :refer [defelem]]
                     [util :refer [url url-encode]]
                     [element :refer :all])
-            (image-shower [carousel :as carousel :refer [carousel]])))
+            (image-shower [carousel :as carousel :refer [carousel]]
+                          [db :as db :only [entry-count]])))
 
 (defelem tag [t]
   (link-to {:class "card-link text-muted tag"}
@@ -65,19 +66,25 @@
     (range (- around (floor q))
            (+ around (ceil q)))))
 
-(defelem page-nav [current & {:keys [count] :or {count 5}}]
+(defn last-page-n [entry-count & {:keys [page-size] :or {page-size 10}}]
+  (ceil (/ entry-count page-size)))
+
+(defelem page-nav [current entry-count & {:keys [link-count] :or {link-count 5}}]
   "Navigation bar for previous and next page."
-  [:nav {:aria-label "Page Navigation"}
-   [:ul.pagination.justify-content-center
-    [:li.page-item
-     (nav-link {:class (when (= current 1) "disabled")} (- current 1) "<")
-     (map (fn [i]
-            (nav-link {:class (when (= i current) "active")} i))
-          (filter #(>= % 1) (range-around current count)))
-     (nav-link (+ current 1) ">")]]])
+  (let [last-n (last-page-n entry-count)]
+    [:nav {:aria-label "Page Navigation"}
+     [:ul.pagination.justify-content-center
+      [:li.page-item
+       (nav-link {:class (when (= current 1) "disabled")} (- current 1) "<")
+       (map (fn [i]
+              (nav-link {:class (when (= i current) "active")} i))
+            (filter #(>= last-n % 1) (range-around current link-count)))
+       (nav-link {:class (when (= last-n current) "disabled")} (+ current 1) ">")]]]))
+
 
 (defelem posts [current-page lst]
-  (let [pnav (when current-page (page-nav current-page))]
+  (let [pnav (when current-page (page-nav current-page
+                                          (db/entry-count (:name (first lst)))))]
     [:div.card-columns
      pnav
      (map #(post {} %)

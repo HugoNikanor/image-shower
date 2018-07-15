@@ -95,7 +95,12 @@ which I'm not sure is better.
   (-> (select* page)
       (with entry (fields "count(1)"))))
 
-(comment (defn entry-count [page-name]
-   (first (select page
-                  (where {:name page-name})
-                  (with entry)))))
+(defn entry-count [page-name]
+  "Returns the number of entries in the page named page-name"
+  (-> (pages)
+      (where {:name page-name})
+      (select)
+      first
+      :entry
+      first
+      :count))
