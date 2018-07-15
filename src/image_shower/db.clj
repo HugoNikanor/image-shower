@@ -90,3 +90,6 @@ which I'm not sure is better.
 (defn page-filter [base p]
   (-> base
       (where {:page.name p})))
+
+(defn pages []
+  (select* page))

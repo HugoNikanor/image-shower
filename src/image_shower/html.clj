@@ -67,3 +67,16 @@
      (map #(post {} %)
           lst)
      pnav]))
+
+(defelem page-item [page]
+  "Single item in page list"
+  [:li.list-group-item
+   (link-to (url "/" (:name page))
+            (or (:fancy_name page)
+                (:name page)))]
+  )
+
+(defelem page-list [pages]
+  "List of all pages"
+  [:ul.list-group
+   (map #(page-item {} %) pages)])

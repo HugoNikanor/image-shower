@@ -52,6 +52,11 @@
                      "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js")])))
 
 (defroutes app
+  (GET "/" []
+    (full-page "/"
+               [:h1 "Page List"]
+               (html/page-list (-> (pages) (select)))))
+
   (context "/:page-name" [page-name]
     (route/files "/media" {:root (str "public/" (str "/" page-name))})
     (GET "/" [p :<< safe-as-int :as {uri :uri}]
