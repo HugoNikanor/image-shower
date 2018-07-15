@@ -65,21 +65,19 @@
     (range (- around (floor q))
            (+ around (ceil q)))))
 
-(defelem page-nav [data]
+(defelem page-nav [current & {:keys [count] :or {count 5}}]
   "Navigation bar for previous and next page."
-  (let [{cur :page} data
-        p-count 5]
-    [:nav {:aria-label "Page Navigation"}
-     [:ul.pagination.justify-content-center
-      [:li.page-item
-       (nav-link {:class (when (= cur 1) "disabled")} (- cur 1) "<")
-       (map (fn [i]
-              (nav-link {:class (when (= i cur) "active")} i))
-            (filter #(>= % 1) (range-around cur 5)))
-       (nav-link (+ cur 1) ">")]]]))
+  [:nav {:aria-label "Page Navigation"}
+   [:ul.pagination.justify-content-center
+    [:li.page-item
+     (nav-link {:class (when (= current 1) "disabled")} (- current 1) "<")
+     (map (fn [i]
+            (nav-link {:class (when (= i current) "active")} i))
+          (filter #(>= % 1) (range-around current count)))
+     (nav-link (+ current 1) ">")]]])
 
-(defelem posts [data lst]
-  (let [pnav (when data (page-nav {} data))]
+(defelem posts [current-page lst]
+  (let [pnav (when current-page (page-nav current-page))]
     [:div.card-columns
      pnav
      (map #(post {} %)

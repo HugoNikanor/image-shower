@@ -62,8 +62,7 @@
     (GET "/" [p :<< safe-as-int :as {uri :uri}]
       (full-page (str "/" page-name)
                  (html/posts {:class "main"}
-                             {:uri uri
-                              :page p}
+                             p
                              (-> q-base
                                  (page page-name)
                                  (content-page (- p 1))
@@ -72,8 +71,7 @@
     (GET "/tag/:tag" [tag p :<< safe-as-int :as {uri :uri}]
       (full-page (str "/" page-name)
        (html/posts {:class "main"}
-                   {:uri uri
-                    :page p}
+                   p
                    (-> q-base
                        (page page-name)
                        (tagged (form-decode-str tag))
