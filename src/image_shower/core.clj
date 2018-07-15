@@ -42,6 +42,17 @@
 (defn safe-as-int [n]
   (or (as-int n) 1))
 
+(defn as-int-within [min max & {:keys [default] :or {default 1}}]
+  "Returns a function which takes something that can be converted into
+an int. Returns default on fail, and max or min if the int is above or
+below the threasholds."
+  (fn [in]
+    (let [n (as-int in)]
+         (cond (nil? n) default
+               (> min n) min
+               (> n max) max
+               :else n))))
+
 (defn full-page [site & elems]
   (with-base-url site
     (html5
@@ -51,46 +62,53 @@
                      "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
                      "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js")])))
 
+(defn page-fix [page-name]
+  "Local helper function for :<< binding of page."
+  (->> page-name
+       entry-count
+       html/page-count
+       (as-int-within 1)))
+
 (defroutes app
   (GET "/" []
     (full-page "/"
-               [:h1 "Page List"]
-               (html/page-list (-> (pages) (select)))))
+      [:h1 "Page List"]
+      (html/page-list (-> (pages) (select)))))
 
   (context "/:page-name" [page-name]
     (route/files "/media" {:root (str "public/" (str "/" page-name))})
-    (GET "/" [p :<< safe-as-int :as {uri :uri}]
+    (GET "/" [p :<< (page-fix page-name)]
       (full-page (str "/" page-name)
-                 (html/posts {:class "main"}
-                             (-> q-base
-                                 (page page-name)
-                                 (content-page (- p 1))
-                                 (select))
-                             :current-page p
-                             :entry-count (entry-count page-name)
-                             )))
+        (html/posts {:class "main"}
+                    (-> q-base
+                        (page page-name)
+                        (content-page (- p 1))
+                        (select))
+                    :current-page p
+                    :entry-count (entry-count page-name)
+                    )))
 
-    (GET "/tag/:tag" [tag p :<< safe-as-int :as {uri :uri}]
+    (GET "/tag/:tag" [tag p :<< (page-fix page-name)]
       (full-page (str "/" page-name)
-       (html/posts {:class "main"}
-                   (-> q-base
-                       (page page-name)
-                       (tagged (form-decode-str tag))
-                       (content-page (- p 1))
-                       (select))
-                   :current-page p
-                   :entry-count (entry-count page-name tag)
-                   )))
+        (html/posts {:class "main"}
+                    (-> q-base
+                        (page page-name)
+                        (tagged (form-decode-str tag))
+                        (content-page (- p 1))
+                        (select))
+                    :current-page p
+                    :entry-count (entry-count page-name tag)
+                    )))
 
     (GET "/post/:id" [id :<< as-int]
       ;; Requesting nonexistant id leads to empty page
       (full-page (str "/" page-name)
-       (html/posts
-        (-> q-base
-            (page page-name)
-            (where {:id id})
-            (limit 1)
-            (select))))))
+        (html/posts
+         (-> q-base
+             (page page-name)
+             (where {:id id})
+             (limit 1)
+             (select))))))
 
   (route/not-found "404 Page"))
 

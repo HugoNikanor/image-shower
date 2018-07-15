@@ -65,12 +65,12 @@
     (range (- around (floor q))
            (+ around (ceil q)))))
 
-(defn last-page-n [entry-count & {:keys [page-size] :or {page-size 10}}]
+(defn page-count [entry-count & {:keys [page-size] :or {page-size 10}}]
   (ceil (/ entry-count page-size)))
 
 (defelem page-nav [current entry-count & {:keys [link-count] :or {link-count 5}}]
   "Navigation bar for previous and next page."
-  (let [last-n (last-page-n entry-count)]
+  (let [last-n (page-count entry-count)]
     [:nav {:aria-label "Page Navigation"}
      [:ul.pagination.justify-content-center
       [:li.page-item
