@@ -14,7 +14,7 @@
   ;; (entity-fields :title :slug :timestamp :post_type :text)
   (has-many media)
   (many-to-many tag :tag_map)
-  (belongs-to tag_map)
+  (has-many tag_map)
   (belongs-to page))
 
 (defentity tag
@@ -27,8 +27,9 @@
 
 (defentity tag_map
   ;; (entity-fields :entry_id :tag_id)
-  (has-one entry)
-  (has-one tag))
+  (belongs-to entry)
+  (belongs-to tag)
+  )
 
 (defentity page
   (has-many entry))
@@ -41,8 +42,10 @@
 ;;; then the cache breaks and the library refuses to work.
 (def q-base
   (-> (select* entry)
+      (order :timestamp :desc)
       (with tag)
-      (with media)))
+      (with media)
+      (with page)))
 
 (defn memv [collection item]
   (.contains collection item))
@@ -86,10 +89,4 @@ which I'm not sure is better.
 
 (defn page-filter [base p]
   (-> base
-      (where {:page_id
-              [= (subselect
-                  page
-                  (fields :id)
-                  (limit 1)
-                  (where {:name p}))]})))
-
+      (where {:page.name p})))
