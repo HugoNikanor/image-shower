@@ -11,11 +11,12 @@
             (garden [core :refer [css]]
                     [units :refer :all :exclude [rem]])
             (image-shower [html :as html]
+                          [util :as util]
                           [db :refer :all
                            :exclude [page]
                            :rename {page-filter page}])
-            [korma.core :refer :all]
-            ))
+            [korma.core :refer :all])
+  (:refer-clojure :exclude [update]))
 
 (def page-css
   (css
@@ -39,20 +40,6 @@
    (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css")
    [:style page-css]])
 
-(defn safe-as-int [n]
-  (or (as-int n) 1))
-
-(defn as-int-within [min max & {:keys [default] :or {default 1}}]
-  "Returns a function which takes something that can be converted into
-an int. Returns default on fail, and max or min if the int is above or
-below the threasholds."
-  (fn [in]
-    (let [n (as-int in)]
-         (cond (nil? n) default
-               (> min n) min
-               (> n max) max
-               :else n))))
-
 (defn full-page [site & elems]
   (with-base-url site
     (html5
@@ -66,8 +53,8 @@ below the threasholds."
   "Local helper function for :<< binding of page."
   (->> page-name
        entry-count
-       html/page-count
-       (as-int-within 1)))
+       util/page-count
+       (util/as-int-within 1)))
 
 (defroutes app
   (GET "/" []

@@ -1,6 +1,7 @@
 (ns image-shower.db
   (:require (korma [db :refer :all]
-                   [core :refer :all])))
+                   [core :refer :all]))
+  (:refer-clojure :exclude [update]))
 
 (def db-spec (postgres
          {:db "image-shower"
@@ -46,9 +47,6 @@
       (with tag)
       (with media)
       (with page)))
-
-(defn memv [collection item]
-  (.contains collection item))
 
 (comment
   (time (select entry
