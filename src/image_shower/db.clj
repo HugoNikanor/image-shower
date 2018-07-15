@@ -1,5 +1,5 @@
 (ns image-shower.db
-  (:require (korma [db :refer :all]
+  (:require (korma [db :as db :refer [defdb]]
                    [core :refer :all]))
   (:refer-clojure :exclude [update]))
 
@@ -7,23 +7,10 @@
 ;; Documentation says to use :tags.id, but that does
 ;; nothing
 
-(comment
-  (time (select entry
-                (with tag)
-                (with media)))
-  "Elapsed time: 76.041317 msecs"
-
-  (time (entries-tagged entries "cfnm"))
-  "Elapsed time: 0.051676 msecs"
-
-  (time (filter #(= 1262 (:id %))
-                (get-entries))))
-
-(def db-spec (postgres
-         {:db "image-shower"
-          :user "hugo"}))
-
-(defdb db db-spec)
+(defdb db
+  (db/postgres
+     {:db "image-shower"
+      :user "hugo"}))
 
 ;;; Database entities
 
@@ -36,7 +23,8 @@
   (belongs-to page))
 
 (defentity tag
-  (many-to-many entry :tap_map))
+  (many-to-many entry :tap_map)
+  (has-many tag_map))
 
 (defentity media
   (entity-fields :url :alt)
@@ -49,19 +37,17 @@
 (defentity page
   (has-many entry))
 
-;;; TODO this can't be a static variable, because if the data changes
-;;; then the cache breaks and the library refuses to work.
+;;; Collection of query filters to be used on the form
+;;; (-> (select* entry)
+;;;     (tagged "test")
+;;;     select)
+
 (defn entry-base []
   (-> (select* entry)
       (order :timestamp :desc)
       (with tag)
       (with media)
       (with page)))
-
-;;; Collection of query filters to be used on the form
-;;; (-> (select* entry)
-;;;     (tagged "test")
-;;;     select)
 
 (defn content-page [base n & {:keys [page-size] :or {page-size 10}}]
   "Limits query to a single page, with size page-size,
@@ -86,11 +72,9 @@ which I'm not sure is better.
   (-> base
       (where {:id [in (subselect
                        tag_map
+                       (with tag)
                        (fields :entry_id)
-                       (where {:tag_id [in (subselect
-                                            tag
-                                            (fields :id)
-                                            (where {:text tag-name}))]}))]})))
+                       (where {:tag.text tag-name}))]})))
 
 ;;; Direct functions which return some form of information about the database 
 
