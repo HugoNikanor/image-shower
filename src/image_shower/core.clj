@@ -62,27 +62,30 @@
     (GET "/" [p :<< safe-as-int :as {uri :uri}]
       (full-page (str "/" page-name)
                  (html/posts {:class "main"}
-                             p
                              (-> q-base
                                  (page page-name)
                                  (content-page (- p 1))
-                                 (select)))))
+                                 (select))
+                             :current-page p
+                             :entry-count (entry-count page-name)
+                             )))
 
     (GET "/tag/:tag" [tag p :<< safe-as-int :as {uri :uri}]
       (full-page (str "/" page-name)
        (html/posts {:class "main"}
-                   p
                    (-> q-base
                        (page page-name)
                        (tagged (form-decode-str tag))
                        (content-page (- p 1))
-                       (select)))))
+                       (select))
+                   :current-page p
+                   :entry-count (entry-count page-name tag)
+                   )))
 
     (GET "/post/:id" [id :<< as-int]
       ;; Requesting nonexistant id leads to empty page
       (full-page (str "/" page-name)
        (html/posts
-        false
         (-> q-base
             (page page-name)
             (where {:id id})

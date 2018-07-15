@@ -2,8 +2,7 @@
   (:require (hiccup [def :refer [defelem]]
                     [util :refer [url url-encode]]
                     [element :refer :all])
-            (image-shower [carousel :as carousel :refer [carousel]]
-                          [db :as db :only [entry-count]])))
+            (image-shower [carousel :as carousel :refer [carousel]])))
 
 (defelem tag [t]
   (link-to {:class "card-link text-muted tag"}
@@ -82,9 +81,13 @@
        (nav-link {:class (when (= last-n current) "disabled")} (+ current 1) ">")]]]))
 
 
-(defelem posts [current-page lst]
-  (let [pnav (when current-page (page-nav current-page
-                                          (db/entry-count (:name (first lst)))))]
+(defelem posts [lst & {:keys [current-page entry-count]}]
+  "Formats a list of posts as bootstrap cards
+current-page is which page the user is currently reading, and
+entry-count is the max number of pages in the current context
+(all posts, all posts tagged, ...)
+"
+  (let [pnav (when current-page (page-nav current-page entry-count))]
     [:div.card-columns
      pnav
      (map #(post {} %)

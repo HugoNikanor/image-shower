@@ -95,12 +95,12 @@ which I'm not sure is better.
   (-> (select* page)
       (with entry (fields "count(1)"))))
 
-(defn entry-count [page-name]
+(defn entry-count [page-name & [tag]]
   "Returns the number of entries in the page named page-name"
-  (-> (pages)
-      (where {:name page-name})
-      (select)
-      first
-      :entry
-      first
-      :count))
+  (let [base (-> (select* entry)
+                 (with page)
+                 (where {:page.name page-name})
+                 (fields "count(1)"))]
+    (let [q (if tag (tagged base tag)
+                base)]
+      (-> q select first :count))))
