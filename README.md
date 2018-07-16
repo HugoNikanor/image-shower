@@ -1,14 +1,16 @@
-# image-shower
+# Image Shower
 
-A Clojure library designed to ... well, that part is up to you.
+A web-service similar to Tumblr, which means that it displays multiple
+posts, with optional image and text. Also has support for keywords on
+posts.
 
 ## Usage
 
-FIXME
+- `public/` should contain one directory for each "site" (with the
+  exact same name).
 
 ## License
 
-Copyright © 2018 FIXME
+Copyright © 2018 Hugo Hornquist
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the MIT License.
