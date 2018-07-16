@@ -31,20 +31,20 @@
   "Dummy page for features not yet done."
   [:body [:pre (str feature " is not yet implemented")]])
 
-(defelem head []
+(defelem head [title]
   "Common HTML HEAD items."
   [:head
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1, shrink-to-fit=no"}]
-   [:title "Image Shower"]
+   [:title (str title (when title " | ") "Image Shower")]
    (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css")
    [:style page-css]])
 
-(defn full-page [site & elems]
+(defn full-page [site title & elems]
   (with-base-url site
     (html5
-        (head)
+        (head title)
         [:body elems
          (include-js "https://code.jquery.com/jquery-3.3.1.slim.min.js"
                      "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
@@ -60,13 +60,14 @@
 (defroutes app
   (GET "/" []
     (full-page "/"
-      [:h1 "Page List"]
+      "Page List"
       (html/page-list (-> (pages) (select)))))
 
   (context "/:page-name" [page-name]
     (route/files "/media" {:root (str "public/" (str "/" page-name))})
     (GET "/" [p :<< (page-fix page-name)]
       (full-page (str "/" page-name)
+        (fancy-name page-name)
         (html/posts {:class "main"}
                     (-> (entry-base)
                         (page page-name)
@@ -78,6 +79,7 @@
 
     (GET "/tag/:tag" [tag p :<< (page-fix page-name)]
       (full-page (str "/" page-name)
+        (str tag "@" (fancy-name page-name))
         (html/posts {:class "main"}
                     (-> (entry-base)
                         (page page-name)
@@ -91,6 +93,7 @@
     (GET "/post/:id" [id :<< as-int]
       ;; Requesting nonexistant id leads to empty page
       (full-page (str "/" page-name)
+        (str id "@" (fancy-name page-name))
         (html/posts
          (-> (entry-base)
              (page page-name)

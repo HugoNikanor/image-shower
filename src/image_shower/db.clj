@@ -92,3 +92,10 @@ which I'm not sure is better.
     (let [q (if tag (tagged base tag)
                 base)]
       (-> q select first :count))))
+
+(defn fancy-name [page-name]
+  "Returns a better looking name for the page, if available."
+  (let [r (first (select page
+                   (where {:name page-name})))]
+    (or (:fancy_name r)
+        (:name r))))
