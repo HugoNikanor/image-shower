@@ -27,10 +27,6 @@
    [:.main {:padding (em 1)}
     [:.tag {:font-size (em 0.8)}]]))
 
-(defelem not-implemented [feature]
-  "Dummy page for features not yet done."
-  [:body [:pre (str feature " is not yet implemented")]])
-
 (defelem head [title]
   "Common HTML HEAD items."
   [:head
