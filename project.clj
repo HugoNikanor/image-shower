@@ -14,6 +14,7 @@
                  ]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler image-shower.core/handler
-         :nrepl {:start? true}
-         })
+         :nrepl {:start? true}}
+  :profiles {:uberjar {:aot :all
+                       :main image-shower.main}})
 
