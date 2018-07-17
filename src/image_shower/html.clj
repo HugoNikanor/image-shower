@@ -1,8 +1,11 @@
 (ns image-shower.html
   (:require (hiccup [def :refer [defelem]]
-                    [util :refer [url url-encode]]
+                    [page :refer [html5 include-css include-js]]
+                    [util :refer [url url-encode with-base-url]]
                     [element :refer :all])
-            (image-shower [carousel :as carousel :refer [carousel]]
+             (garden [core :refer [css]]
+                     [units :refer :all :exclude [rem]])
+             (image-shower [carousel :as carousel :refer [carousel]]
                           [util :as util :refer [ceil floor range-around]])))
 
 (defelem tag [t]
@@ -95,3 +98,31 @@ entry-count is the max number of pages in the current context
   "List of all pages"
   [:ul.list-group
    (map #(page-item {} %) pages)])
+
+(def page-css
+  (css
+   [:blockquote {:border-left-width (px 2)
+                 :border-left-style "solid"
+                 :border-left-color "grey"
+                 :padding-left (em 0.5)}]
+   [:.main {:padding (em 1)}
+    [:.tag {:font-size (em 0.8)}]]))
+
+(defelem head [title]
+  "Common HTML HEAD items."
+  [:head
+   [:meta {:charset "utf-8"}]
+   [:meta {:name "viewport"
+           :content "width=device-width, initial-scale=1, shrink-to-fit=no"}]
+   [:title (str title (when title " | ") "Image Shower")]
+   (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css")
+   [:style page-css]])
+
+(defn full-page [site title & elems]
+  (with-base-url site
+    (html5
+        (head title)
+        [:body elems
+         (include-js "https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                     "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                     "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js")])))
