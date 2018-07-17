@@ -4,8 +4,6 @@
             (compojure [core :refer :all]
                        [coercions :refer [as-int]]
                        [route :as route])
-            (hiccup [util :refer :all :exclude [url-encode]]
-                    [element :refer :all])
             (image-shower [html :as html]
                           [util :as util]
                           [db :refer :all
