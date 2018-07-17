@@ -78,17 +78,18 @@
                     )))
 
     (GET "/tag/:tag" [tag p :<< (page-fix page-name)]
-      (full-page (str "/" page-name)
-        (str tag "@" (fancy-name page-name))
-        (html/posts {:class "main"}
-                    (-> (entry-base)
-                        (page page-name)
-                        (tagged (form-decode-str tag))
-                        (content-page (- p 1))
-                        (select))
-                    :current-page p
-                    :entry-count (entry-count page-name tag)
-                    )))
+      (let [t (form-decode-str tag)]
+        (full-page (str "/" page-name)
+          (str t "@" (fancy-name page-name))
+          (html/posts {:class "main"}
+                      (-> (entry-base)
+                          (page page-name)
+                          (tagged t)
+                          (content-page (- p 1))
+                          (select))
+                      :current-page p
+                      :entry-count (entry-count page-name t)
+                      ))))
 
     (GET "/post/:id" [id :<< as-int]
       ;; Requesting nonexistant id leads to empty page
