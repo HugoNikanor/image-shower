@@ -8,6 +8,7 @@ posts.
 
 - `public/` should contain one directory for each "site" (with the
   exact same name).
+- `lein ring server-headless` to start
 
 ## License
 
