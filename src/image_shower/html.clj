@@ -9,7 +9,7 @@
                           [util :as util :refer [ceil floor range-around]])))
 
 (defelem tag [t]
-  (link-to {:class "card-link text-muted tag"}
+  (link-to {:class "text-muted tag"}
            (url "/tag/" (url-encode t))
            t))
 
@@ -41,9 +41,7 @@
                [:video.card-img-top
                 {:controls true
                  :preload "metadata"}
-                [:source {:src (url "/media/" (:url vid))}]])
-     
-     )
+                [:source {:src (url "/media/" (:url vid))}]]))
    (when-not (empty? (:text entry))
      [:main.card-body
       (comment [:h4.card-title (:title entry)])
@@ -106,7 +104,10 @@ entry-count is the max number of pages in the current context
                  :border-left-color "grey"
                  :padding-left (em 0.5)}]
    [:.main {:padding (em 1)}
-    [:.tag {:font-size (em 0.8)}]]))
+    [:.tag {:font-size (em 0.8)
+            :display 'inline-block
+            :margin-right (em 1)
+            }]]))
 
 (defelem head [title]
   "Common HTML HEAD items."
