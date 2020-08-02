@@ -8,9 +8,11 @@
 ;; nothing
 
 (defdb db
-  (db/postgres
-     {:db "image-shower"
-      :user "hugo"}))
+  ;; (db/postgres
+  ;;    {:db "image-shower"
+  ;;     :user "hugo"})
+  (db/sqlite3
+   {:db "image-shower.db"}))
 
 ;;; Database entities
 
@@ -81,14 +83,14 @@ which I'm not sure is better.
 (defn pages []
   "Returns a list of pages."
   (-> (select* page)
-      (with entry (fields "count(1)"))))
+      (with entry (fields ["count(1)" :count]))))
 
 (defn entry-count [page-name & [tag]]
   "Returns the number of entries in the page named page-name"
   (let [base (-> (select* entry)
                  (with page)
                  (where {:page.name page-name})
-                 (fields "count(1)"))]
+                 (fields ["count(1)" :count]))]
     (let [q (if tag (tagged base tag)
                 base)]
       (-> q select first :count))))

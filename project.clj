@@ -11,6 +11,7 @@
                  [garden "1.3.5"]       ; CSS
                  [korma "0.4.3"]        ; SQL
                  [org.postgresql/postgresql "9.4.1207"]
+                 [org.xerial/sqlite-jdbc "3.27.2.1"]
                  ]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler image-shower.core/handler
