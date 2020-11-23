@@ -7,12 +7,6 @@
 ;; Documentation says to use :tags.id, but that does
 ;; nothing
 
-(defdb db
-  ;; (db/postgres
-  ;;    {:db "image-shower"
-  ;;     :user "hugo"})
-  (db/sqlite3
-   {:db "image-shower.db"}))
 
 ;;; Database entities
 
