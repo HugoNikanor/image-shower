@@ -23,7 +23,7 @@
   :host "0.0.0.0"
   :db-type 'postgres
   :db-args {:db "image-shower" :user "hugo"}
-  :data-path "/var/lib/image-shower"
+  :data-path "/usr/local/var/image-shower"
   })
 
 (defn find-config-file [spec]
