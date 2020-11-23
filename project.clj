@@ -1,4 +1,4 @@
-(defproject image-shower "0.1"
+(defproject image-shower "0.2"
   :description "Web server for showing images"
   :url "http://github.com/hugonikanor/image-shower"
   :license {:name "The MIT License"
